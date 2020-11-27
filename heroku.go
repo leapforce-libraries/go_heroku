@@ -28,12 +28,12 @@ type HerokuError struct {
 	Message  string `json:"message"`
 }
 
-func NewHeroku(bearerToken string) (*Heroku, error) {
+func NewHeroku(bearerToken string) *Heroku {
 	h := Heroku{}
 	h.bearerToken = bearerToken
 	h.Client = &http.Client{}
 
-	return &h, nil
+	return &h
 }
 
 func (_ *Heroku) baseURL() string {

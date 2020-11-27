@@ -8,8 +8,6 @@ import (
 	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
-type Apps []App
-
 type App struct {
 	// ACM status of this app
 	ACM bool `json:"acm"`
