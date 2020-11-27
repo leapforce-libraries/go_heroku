@@ -77,7 +77,7 @@ type App struct {
 }
 
 func (h *Heroku) ListApps() (*[]App, *errortools.Error) {
-	url := fmt.Sprintf("%s/%s", h.baseURL(), "apps")
+	url := fmt.Sprintf("%s/apps", h.baseURL())
 
 	apps := []App{}
 	e := h.get(url, &apps)
