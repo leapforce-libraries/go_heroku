@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
 type AddOn struct {
@@ -75,11 +76,15 @@ type AddOn struct {
 	WebURL *string `json:"web_url"`
 }
 
-func (h *Heroku) ListAddOns(appIDOrName string) (*[]AddOn, *errortools.Error) {
-	url := fmt.Sprintf("%s/apps/%s/addons", h.baseURL(), appIDOrName)
-
+func (service *Service) ListAddOns(appIDOrName string) (*[]AddOn, *errortools.Error) {
 	addOns := []AddOn{}
-	e := h.get(url, &addOns)
+
+	requestConfig := go_http.RequestConfig{
+		URL:           service.url(fmt.Sprintf("apps/%s/addons", appIDOrName)),
+		ResponseModel: &addOns,
+	}
+
+	_, _, e := service.get(&requestConfig)
 
 	return &addOns, e
 }

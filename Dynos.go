@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
 type Dyno struct {
@@ -39,11 +40,15 @@ type Dyno struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (h *Heroku) ListDynos(appIDOrName string) (*[]Dyno, *errortools.Error) {
-	url := fmt.Sprintf("%s/apps/%s/dynos", h.baseURL(), appIDOrName)
-
+func (service *Service) ListDynos(appIDOrName string) (*[]Dyno, *errortools.Error) {
 	dynos := []Dyno{}
-	e := h.get(url, &dynos)
+
+	requestConfig := go_http.RequestConfig{
+		URL:           service.url(fmt.Sprintf("apps/%s/dynos", appIDOrName)),
+		ResponseModel: &dynos,
+	}
+
+	_, _, e := service.get(&requestConfig)
 
 	return &dynos, e
 }

@@ -1,11 +1,11 @@
 package heroku
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gofrs/uuid"
 	errortools "github.com/leapforce-libraries/go_errortools"
+	go_http "github.com/leapforce-libraries/go_http"
 )
 
 type App struct {
@@ -76,11 +76,15 @@ type App struct {
 	WebURL string `json:"web_url"`
 }
 
-func (h *Heroku) ListApps() (*[]App, *errortools.Error) {
-	url := fmt.Sprintf("%s/apps", h.baseURL())
-
+func (service *Service) ListApps() (*[]App, *errortools.Error) {
 	apps := []App{}
-	e := h.get(url, &apps)
+
+	requestConfig := go_http.RequestConfig{
+		URL:           service.url("apps"),
+		ResponseModel: &apps,
+	}
+
+	_, _, e := service.get(&requestConfig)
 
 	return &apps, e
 }
