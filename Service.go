@@ -45,7 +45,7 @@ func NewService(config *ServiceConfig) (*Service, *errortools.Error) {
 func (service *Service) httpRequest(httpMethod string, requestConfig *go_http.RequestConfig) (*http.Request, *http.Response, *errortools.Error) {
 	// add authentication header
 	header := http.Header{}
-	header.Set("Authorization", service.bearerToken)
+	header.Set("Authorization", fmt.Sprintf("Bearer %s", service.bearerToken))
 	header.Set("Accept", "application/vnd.heroku+json; version=3")
 	(*requestConfig).NonDefaultHeaders = &header
 
