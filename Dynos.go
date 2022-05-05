@@ -2,6 +2,7 @@ package heroku
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -12,22 +13,22 @@ import (
 type Dyno struct {
 	// app
 	App struct {
-		ID   uuid.UUID `json:"id"`
+		Id   uuid.UUID `json:"id"`
 		Name string    `json:"name"`
 	} `json:"app"`
 	// a URL to stream output from for attached processes or null for non-attached processes
-	AttachURL *string `json:"attach_url"`
+	AttachUrl *string `json:"attach_url"`
 	// command used to start this process
 	Command string `json:"command"`
 	// when dyno was created
 	CreatedAt time.Time `json:"created_at"`
 	// unique identifier of this dyno
-	ID uuid.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 	// the name of this process on this dyno
 	Name string `json:"name"`
 	// identity of release
 	Release struct {
-		ID      uuid.UUID `json:"id"`
+		Id      uuid.UUID `json:"id"`
 		Version int       `json:"version"`
 	} `json:"release"`
 	// dyno size (default: “standard-1X”)
@@ -40,15 +41,16 @@ type Dyno struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (service *Service) ListDynos(appIDOrName string) (*[]Dyno, *errortools.Error) {
+func (service *Service) ListDynos(appIdOrName string) (*[]Dyno, *errortools.Error) {
 	dynos := []Dyno{}
 
 	requestConfig := go_http.RequestConfig{
-		URL:           service.url(fmt.Sprintf("apps/%s/dynos", appIDOrName)),
+		Method:        http.MethodGet,
+		Url:           service.url(fmt.Sprintf("apps/%s/dynos", appIdOrName)),
 		ResponseModel: &dynos,
 	}
 
-	_, _, e := service.get(&requestConfig)
+	_, _, e := service.httpRequest(&requestConfig)
 
 	return &dynos, e
 }

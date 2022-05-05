@@ -1,6 +1,7 @@
 package heroku
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -10,12 +11,12 @@ import (
 
 type App struct {
 	// ACM status of this app
-	ACM bool `json:"acm"`
+	Acm bool `json:"acm"`
 	// when app was archived
 	ArchivedAt *time.Time `json:"archived_at"`
 	// stack
 	BuildStack struct {
-		ID   uuid.UUID `json:"id"`
+		Id   uuid.UUID `json:"id"`
 		Name string    `json:"name"`
 	} `json:"build_stack"`
 	// description from buildpack of app
@@ -23,9 +24,9 @@ type App struct {
 	// when app was created
 	CreatedAt time.Time `json:"created_at"`
 	// git repo URL of app
-	GitURL string `json:"git_url"`
+	GitUrl string `json:"git_url"`
 	// unique identifier
-	ID uuid.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 	// describes whether a Private Spaces app is externally routable or not
 	InternalRouting *bool `json:"internal_routing"`
 	// maintenance status of app
@@ -34,17 +35,17 @@ type App struct {
 	Name string `json:"name"`
 	// identity of team
 	Organization *struct {
-		ID   uuid.UUID `json:"id"`
+		Id   uuid.UUID `json:"id"`
 		Name string    `json:"name"`
 	} `json:"organization"`
 	// identity of an account
 	Owner struct {
 		Email string    `json:"email"`
-		ID    uuid.UUID `json:"id"`
+		Id    uuid.UUID `json:"id"`
 	} `json:"owner"`
 	// identity of app region
 	Region struct {
-		ID   uuid.UUID `json:"id"`
+		Id   uuid.UUID `json:"id"`
 		Name string    `json:"name"`
 	} `json:"region"`
 	// when app was released
@@ -55,36 +56,37 @@ type App struct {
 	SlugSize *int `json:"slug_size"`
 	// identity of space
 	Space *struct {
-		ID     uuid.UUID `json:"id"`
+		Id     uuid.UUID `json:"id"`
 		Name   string    `json:"name"`
 		Shield bool      `json:"shield"`
 	} `json:"space"`
 	// identity of app stack
 	Stack struct {
-		ID   uuid.UUID `json:"id"`
+		Id   uuid.UUID `json:"id"`
 		Name string    `json:"name"`
 	} `json:"stack"`
 	// identity of team
 	Team *struct {
-		ID     uuid.UUID `json:"id"`
+		Id     uuid.UUID `json:"id"`
 		Name   string    `json:"name"`
 		Shield bool      `json:"shield"`
 	} `json:"team"`
 	// when app was updated
 	UpdatedAt time.Time `json:"updated_at"`
 	// web URL of app
-	WebURL string `json:"web_url"`
+	WebUrl string `json:"web_url"`
 }
 
 func (service *Service) ListApps() (*[]App, *errortools.Error) {
 	apps := []App{}
 
 	requestConfig := go_http.RequestConfig{
-		URL:           service.url("apps"),
+		Method:        http.MethodGet,
+		Url:           service.url("apps"),
 		ResponseModel: &apps,
 	}
 
-	_, _, e := service.get(&requestConfig)
+	_, _, e := service.httpRequest(&requestConfig)
 
 	return &apps, e
 }

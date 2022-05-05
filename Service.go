@@ -10,7 +10,7 @@ import (
 
 const (
 	apiName string = "Heroku"
-	apiURL  string = "https://api.heroku.com"
+	apiUrl  string = "https://api.heroku.com"
 )
 
 type Service struct {
@@ -42,7 +42,7 @@ func NewService(config *ServiceConfig) (*Service, *errortools.Error) {
 	}, nil
 }
 
-func (service *Service) httpRequest(httpMethod string, requestConfig *go_http.RequestConfig) (*http.Request, *http.Response, *errortools.Error) {
+func (service *Service) httpRequest(requestConfig *go_http.RequestConfig) (*http.Request, *http.Response, *errortools.Error) {
 	// add authentication header
 	header := http.Header{}
 	header.Set("Authorization", fmt.Sprintf("Bearer %s", service.bearerToken))
@@ -53,7 +53,7 @@ func (service *Service) httpRequest(httpMethod string, requestConfig *go_http.Re
 	errorResponse := ErrorResponse{}
 	(*requestConfig).ErrorModel = &errorResponse
 
-	request, response, e := service.httpService.HTTPRequest(httpMethod, requestConfig)
+	request, response, e := service.httpService.HttpRequest(requestConfig)
 	if errorResponse.Message != "" {
 		e.SetMessage(errorResponse.Message)
 	}
@@ -62,11 +62,7 @@ func (service *Service) httpRequest(httpMethod string, requestConfig *go_http.Re
 }
 
 func (service *Service) url(path string) string {
-	return fmt.Sprintf("%s/%s", apiURL, path)
-}
-
-func (service *Service) get(requestConfig *go_http.RequestConfig) (*http.Request, *http.Response, *errortools.Error) {
-	return service.httpRequest(http.MethodGet, requestConfig)
+	return fmt.Sprintf("%s/%s", apiUrl, path)
 }
 
 func (service *Service) APIName() string {
